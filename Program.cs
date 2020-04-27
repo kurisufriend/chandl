@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net;
-using FChan.Library;
 using System.IO;
 using Newtonsoft.Json;
+using imageboard;
 
 namespace chandl
 {
@@ -16,19 +16,19 @@ namespace chandl
             List<string> imgList = new List<string>();
             try
             {
-                var a = Chan.GetThread(board, threadNumber);
+                var a = ImageboardController.GetThread(board, threadNumber);
             }
             catch (NullReferenceException)
             {
                 Console.WriteLine("Invalid thread");
                 throw new NullReferenceException();
             }
-            Thread threadObject = Chan.GetThread(board, threadNumber);
+            Thread threadObject = ImageboardController.GetThread(board, threadNumber);
             foreach (Post postObject in threadObject.Posts)
             {
-                if (postObject.FileName != 0)
+                if (postObject.tim != 0)
                 {
-                    imgList.Add(postObject.FileName + postObject.FileExtension);
+                    imgList.Add(postObject.tim + postObject.ext);
                 }
             }
             return Tuple.Create(imgList, threadNumber, board);
@@ -68,6 +68,10 @@ namespace chandl
         static void Main(string[] args)
         {
             Console.WriteLine("Running from " + localDirectory);
+            if (args.Length < 1)
+            {
+                Console.WriteLine("Missing arguments.");
+            }
             Console.WriteLine("Downloading images from thread " + args[0] + " on board " + Int32.Parse(args[1]));
             var images = GetThreadImages(args[0], Int32.Parse(args[1]));
             DownloadImages(images.Item1, images.Item2, images.Item3);
